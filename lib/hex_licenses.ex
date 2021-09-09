@@ -3,16 +3,25 @@ defmodule HexLicenses do
   Documentation for `HexLicenses`.
   """
 
-  @doc """
-  Hello world.
+  def direct_dependency_licenses do
+    app_deps()
+    |> Enum.flat_map(fn dep ->
+      license_for_package(to_string(dep))
+    end)
+    |> Enum.uniq()
+  end
 
-  ## Examples
+  def license_for_package(package_name) do
+    {:ok, _} = HTTPoison.start()
 
-      iex> HexLicenses.hello()
-      :world
+    HTTPoison.get!("https://hex.pm/api/packages/#{package_name}")
+    |> Map.get(:body)
+    |> Poison.decode!()
+    |> Map.fetch!("meta")
+    |> Map.fetch!("licenses")
+  end
 
-  """
-  def hello do
-    :world
+  def app_deps do
+    Mix.Project.get!().project()[:deps] |> Keyword.keys()
   end
 end
