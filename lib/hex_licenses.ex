@@ -7,6 +7,24 @@ defmodule HexLicenses do
   Documentation for `HexLicenses`.
   """
 
+  def lint do
+    {:ok, _} = HTTPoison.start()
+    package = package()
+    license_list = spdx_license_list()
+    license_osi_approval = Map.new(license_list, &{&1["licenseId"], &1["isOsiApproved"]})
+
+    if is_nil(package) do
+      {:error, :package_not_defined}
+    else
+      results =
+        Map.new(package[:licenses], fn license ->
+          {license, license_status(license, license_osi_approval)}
+        end)
+
+      {:ok, results}
+    end
+  end
+
   def license_check do
     {:ok, _} = HTTPoison.start()
 
@@ -65,5 +83,9 @@ defmodule HexLicenses do
 
   defp app_deps do
     Mix.Project.get!().project()[:deps] |> Enum.map(&elem(&1, 0))
+  end
+
+  defp package do
+    Mix.Project.get!().project()[:package]
   end
 end
