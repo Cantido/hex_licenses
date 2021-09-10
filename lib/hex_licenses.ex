@@ -18,30 +18,42 @@ defmodule HexLicenses do
       licenses = license_for_package(to_string(dep))
       {dep, licenses}
     end)
-    |> Enum.map(fn {dep, licenses} ->
-      license_statuses =
-        Map.new(licenses, fn license ->
-          {license, license_status(license, license_osi_approval)}
-        end)
+    |> Enum.map(fn
+      {dep, {:ok, licenses}} ->
+        license_statuses =
+          Map.new(licenses, fn license ->
+            {license, license_status(license, license_osi_approval)}
+          end)
 
-      {dep, license_statuses}
+        {dep, license_statuses}
+
+      {dep, {:error, :not_in_hex}} ->
+        {dep, :not_in_hex}
     end)
   end
 
   def license_status(license, license_map) do
     cond do
-      not Map.has_key?(license_map, license) -> :not_found
+      not Map.has_key?(license_map, license) -> :not_recognized
       license_map[license] -> :osi_approved
       true -> :not_approved
     end
   end
 
   defp license_for_package(package_name) do
-    HTTPoison.get!("https://hex.pm/api/packages/#{package_name}")
-    |> Map.fetch!(:body)
-    |> Poison.decode!()
-    |> Map.fetch!("meta")
-    |> Map.fetch!("licenses")
+    resp = HTTPoison.get!("https://hex.pm/api/packages/#{package_name}")
+
+    if resp.status_code == 200 do
+      licenses =
+        resp.body
+        |> Poison.decode!()
+        |> Map.fetch!("meta")
+        |> Map.fetch!("licenses")
+
+      {:ok, licenses}
+    else
+      {:error, :not_in_hex}
+    end
   end
 
   defp spdx_license_list do
@@ -52,6 +64,6 @@ defmodule HexLicenses do
   end
 
   defp app_deps do
-    Mix.Project.get!().project()[:deps] |> Keyword.keys()
+    Mix.Project.get!().project()[:deps] |> Enum.map(&elem(&1, 0))
   end
 end
