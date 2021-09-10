@@ -1,6 +1,6 @@
 # HexLicenses
 
-**TODO: Add description**
+A Mix tool to fetch the licenses of your dependences.
 
 ## Installation
 
