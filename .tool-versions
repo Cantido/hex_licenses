@@ -2,7 +2,5 @@
 #
 # SPDX-License-Identifier: MIT
 
-defmodule HexLicensesTest do
-  use ExUnit.Case
-  doctest HexLicenses
-end
+elixir 1.12.2
+erlang 24.0.3
