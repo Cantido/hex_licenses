@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule Mix.Tasks.Licenses do
   @shortdoc "Checks if all your dependencies have valid licenses"
 

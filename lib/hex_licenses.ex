@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule HexLicenses do
   @moduledoc """
   Documentation for `HexLicenses`.
