@@ -18,13 +18,13 @@ defmodule Mix.Tasks.Licenses.CheckDeps do
       Enum.each(licenses, fn {license, status} ->
         case status do
           :not_approved -> Mix.shell().info(" - \"#{license}\" is not OSI-approved.")
-          :not_recognized -> Mix.shell().info(" - \"#{license}\" is not an SPDX ID")
+          :not_recognized -> Mix.shell().info(" - \"#{license}\" is not an SPDX ID.")
         end
       end)
     end)
 
     if Enum.empty?(unsafe_deps) do
-      Mix.shell().info("All dependencies have OSI-approved licenses")
+      Mix.shell().info("All dependencies have OSI-approved licenses.")
     else
       exit({:shutdown, 1})
     end

@@ -27,15 +27,37 @@ be found at [https://hexdocs.pm/hex_licenses](https://hexdocs.pm/hex_licenses).
 
 ## Usage
 
-There is one mix task in this project:
+There are a few mix tasks in this project.
 
-```sh
-mix licenses
+`mix licenses` will print a summary of your dependencies and the licenses they are offered under.
+
+```
+$ mix licenses
+Dependency  Status
+ex_doc      all OSI approved
+httpoison   all OSI approved
+poison      all OSI approved
 ```
 
-That will print a summary of your dependencies and the licenses they are offered under.
+`mix licenses.check_deps` will print the dependencies that have unsafe or unidentifiable licenses.
+License IDs defined by the package should be an identifier on the [SPDX License List](https://spdx.org/licences).
 
-[![asciicast](https://asciinema.org/a/434908.svg)](https://asciinema.org/a/434908)
+```
+$ mix licenses.check_deps
+dependency_a has 1 unsafe licenses:
+ - "MIT License" is not an SPDX ID.
+dependency_b has 1 unsafe licenses:
+ - "WTFPL" is not OSI-approved.
+```
+
+Lastly, `mix licenses.lint` will check the package info in your own project,
+and returns an error code to your shell if the ID is not found.
+
+```
+$ mix licenses.lint
+This project has 1 unsafe licenses:
+ - "badid" is not an SPDX ID
+```
 
 ## Maintainer
 
