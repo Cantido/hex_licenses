@@ -59,6 +59,17 @@ This project has 1 unsafe licenses:
  - "badid" is not an SPDX ID
 ```
 
+## Roadmap
+
+- ~~Summary of dependency licenses~~
+- ~~Feedback on specific license problems~~
+- ~~Lint license field in current project~~
+- Check if license list matches all licenses in the `LICENSES` dir (as part of the [REUSE specification](https://reuse.software)
+- Read dependencies directly from `mix.lock` so we have exact version numbers
+- Check `deps/` directory to read licenses directly from the `mix.exs` of dependencies
+- Split out OSI check into an `--osi` flag in case you don't care about OSI approval
+- Read license IDs from an `.approved-licenses` file to specify the licenses you support, and fail all others
+
 ## Maintainer
 
 This project was developed by [Rosa Richter](https://about.me/rosa.richter).
