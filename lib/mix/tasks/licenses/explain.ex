@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-defmodule Mix.Tasks.Licenses.CheckDeps do
+defmodule Mix.Tasks.Licenses.Explain do
   use Mix.Task
 
   def run(_args) do

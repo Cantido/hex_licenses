@@ -39,11 +39,11 @@ httpoison   all OSI approved
 poison      all OSI approved
 ```
 
-`mix licenses.check_deps` will print the dependencies that have unsafe or unidentifiable licenses.
+`mix licenses.explain` will print the dependencies that have non-OSI-approved or unidentifiable licenses.
 License IDs defined by the package should be an identifier on the [SPDX License List](https://spdx.org/licences).
 
 ```
-$ mix licenses.check_deps
+$ mix licenses.explain
 dependency_a has 1 unsafe licenses:
  - "MIT License" is not an SPDX ID.
 dependency_b has 1 unsafe licenses:
