@@ -4,9 +4,14 @@
 
 defmodule Mix.Tasks.Licenses do
   @moduledoc """
-  Shows a summary of your dependecies' licenses.
+  Lists all dependencies along with a summary of their licenses.
+
+  This task checks each entry in dependency package's `:licenses` list against the SPDX License List.
+  If the license is listed, this task will then see if it is approved by the Open Source Initiative.
+
+  To see details about licenses that are not found in the SPDX, or are not approved by the OSI, use `mix licenses.explain`.
   """
-  @shortdoc "Shows a summary of your dependecies' licenses."
+  @shortdoc "Lists all dependencies along with a summary of their licenses."
 
   use Mix.Task
 

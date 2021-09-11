@@ -4,12 +4,16 @@
 
 defmodule Mix.Tasks.Licenses.Explain do
   @moduledoc """
-  Show dependency licenses that may be unsafe.
+  Prints all dependencies with unrecognized or non-OSI-approved licenses.
+
+  It is not mandatory for a package's `:licenses` value to contain only SPDX license identifiers, it is only recommended.
+  Therefore, some problems reported by `mix licenses` may be false alarms.
+  For example, a project may specify its license as `MIT License` rather than the SPDX identifier `MIT`.
   """
 
   use Mix.Task
 
-  @shortdoc "Show dependency licenses that may be unsafe."
+  @shortdoc "Prints all dependencies with unrecognized or non-OSI-approved licenses."
 
   def run(_args) do
     unsafe_deps =

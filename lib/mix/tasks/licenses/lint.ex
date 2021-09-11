@@ -5,6 +5,11 @@
 defmodule Mix.Tasks.Licenses.Lint do
   @moduledoc """
   Check the current project's licenses.
+
+  The Hex administrators recommend setting a package's `:licenses` value to SPDX license identifiers.
+  However, this is only a recommendation, and is not enforced in any way.
+  This task will enforce the use of SPDX identifiers in your package,
+  and will return an error code if the current project is using any unrecognized or non-OSI-approved licenses.
   """
   use Mix.Task
 
