@@ -32,10 +32,11 @@ defmodule HexLicenses do
     license_osi_approval = Map.new(license_list, &{&1["licenseId"], &1["isOsiApproved"]})
 
     app_deps()
-    |> Map.new(fn dep ->
+    |> Task.async_stream(fn dep ->
       licenses = license_for_package(to_string(dep))
       {dep, licenses}
     end)
+    |> Stream.map(fn {:ok, val} -> val end)
     |> Enum.map(fn
       {dep, {:ok, licenses}} ->
         license_statuses =
@@ -48,6 +49,7 @@ defmodule HexLicenses do
       {dep, {:error, :not_in_hex}} ->
         {dep, :not_in_hex}
     end)
+    |> Map.new()
   end
 
   def license_status(license, license_map) do
