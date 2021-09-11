@@ -13,7 +13,8 @@ defmodule Mix.Tasks.Licenses.CheckDeps do
       Enum.any?(licenses, fn {_license, status} -> status != :osi_approved end)
     end)
 
-    Enum.each(unsafe_deps, fn {dep, licenses} ->
+    Enum.sort_by(unsafe_deps, fn {dep, _licenses} -> to_string(dep) end)
+    |> Enum.each(fn {dep, licenses} ->
       unsafe_licenses =
         Enum.filter(licenses, fn {_license, status} -> status != :osi_approved end)
 

@@ -24,7 +24,8 @@ defmodule Mix.Tasks.Licenses do
       |> Kernel.+(2)
 
     rows =
-      Enum.map(check, fn {dep, summary} ->
+      Enum.sort_by(check, fn {dep, _summary} -> to_string(dep) end)
+      |> Enum.map(fn {dep, summary} ->
         dep = String.pad_trailing(to_string(dep), first_column_width)
 
         IO.ANSI.format([dep, summary])
