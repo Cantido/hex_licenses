@@ -46,6 +46,11 @@ lint-copyright:
 
   RUN reuse lint
 
+lint-licenses
+  FROM +build
+
+  RUN mix hex.licenses --reuse
+
 test:
   FROM --build-arg MIX_ENV=test +build
 
