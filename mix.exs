@@ -41,6 +41,7 @@ defmodule HexLicenses.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
       {:httpoison, "~> 1.8"},
       {:poison, "~> 3.0"},
+      {:credo, "~> 1.5", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.25", only: [:dev], runtime: false}
     ]
   end

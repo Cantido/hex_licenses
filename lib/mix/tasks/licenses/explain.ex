@@ -3,7 +3,13 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Mix.Tasks.Licenses.Explain do
+  @moduledoc """
+  Show dependency licenses that may be unsafe.
+  """
+
   use Mix.Task
+
+  @shortdoc "Show dependency licenses that may be unsafe."
 
   def run(_args) do
     unsafe_deps =
@@ -21,10 +27,7 @@ defmodule Mix.Tasks.Licenses.Explain do
       Mix.shell().info("#{dep} has #{Enum.count(unsafe_licenses)} unsafe licenses:")
 
       Enum.each(licenses, fn {license, status} ->
-        case status do
-          :not_approved -> Mix.shell().info(" - \"#{license}\" is not OSI-approved.")
-          :not_recognized -> Mix.shell().info(" - \"#{license}\" is not an SPDX ID.")
-        end
+        Mix.shell().info(status_line(status))
       end)
     end)
 
@@ -33,5 +36,13 @@ defmodule Mix.Tasks.Licenses.Explain do
     else
       exit({:shutdown, 1})
     end
+  end
+
+  def status_line(:not_approved) do
+    " - \"#{license}\" is not OSI-approved."
+  end
+
+  def status_line(:not_recognized) do
+    " - \"#{license}\" is not an SPDX ID."
   end
 end

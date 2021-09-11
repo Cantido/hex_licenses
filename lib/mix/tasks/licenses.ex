@@ -3,7 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Mix.Tasks.Licenses do
-  @shortdoc "Checks if all your dependencies have valid licenses"
+  @moduledoc """
+  Shows a summary of your dependecies' licenses.
+  """
+  @shortdoc "Shows a summary of your dependecies' licenses."
+
 
   use Mix.Task
 

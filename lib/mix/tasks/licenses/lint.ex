@@ -3,7 +3,12 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Mix.Tasks.Licenses.Lint do
+  @moduledoc """
+  Check the current project's licenses.
+  """
   use Mix.Task
+
+  @shortdoc "Check the current project's licenses."
 
   def run(_args) do
     {:ok, result} = HexLicenses.lint()
