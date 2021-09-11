@@ -16,7 +16,7 @@ by adding `hex_licenses` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:hex_licenses, "~> 0.1.0", only: [:dev], runtime: false}
+    {:hex_licenses, "~> 0.2.0", only: [:dev], runtime: false}
   ]
 end
 ```
