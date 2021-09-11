@@ -70,28 +70,31 @@ defmodule Mix.Tasks.Licenses do
         (count_not_approved == 0 and count_not_recognized == 0)
 
     if check_passed? do
-      if check_osi_approved do
-        IO.ANSI.format([:green, "all OSI approved"])
-      else
-        IO.ANSI.format([:green, "All valid"])
-      end
+      pass_message(check_osi_approved)
     else
-      not_approved_message = "#{count_not_approved} not OSI approved"
-      not_recognized_message = "#{count_not_recognized} not recognized"
-
-      message =
-        cond do
-          check_osi_approved && count_not_approved > 0 && count_not_recognized > 0 ->
-            not_approved_message <> ", " <> not_recognized_message
-
-          check_osi_approved && count_not_approved > 0 ->
-            not_approved_message
-
-          count_not_recognized > 0 ->
-            not_recognized_message
-        end
-
-      IO.ANSI.format([:red, message])
+      fail_message(count_not_approved, count_not_recognized, check_osi_approved)
     end
+  end
+
+  defp pass_message(true), do: IO.ANSI.format([:green, "all OSI approved"])
+  defp pass_message(false), do: IO.ANSI.format([:green, "all valid"])
+
+  defp fail_message(count_not_approved, count_not_recognized, check_osi_approved) do
+    not_approved_message = "#{count_not_approved} not OSI approved"
+    not_recognized_message = "#{count_not_recognized} not recognized"
+
+    message =
+      cond do
+        check_osi_approved && count_not_approved > 0 && count_not_recognized > 0 ->
+          not_approved_message <> ", " <> not_recognized_message
+
+        check_osi_approved && count_not_approved > 0 ->
+          not_approved_message
+
+        count_not_recognized > 0 ->
+          not_recognized_message
+      end
+
+    IO.ANSI.format([:red, message])
   end
 end
