@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule Mix.Tasks.Licenses.Lint do
   use Mix.Task
 
