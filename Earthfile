@@ -46,7 +46,7 @@ lint-copyright:
 
   RUN reuse lint
 
-lint-licenses
+lint-licenses:
   FROM +build
 
   RUN mix hex.licenses --reuse
