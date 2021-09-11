@@ -54,7 +54,7 @@ defmodule Mix.Tasks.Licenses do
     Enum.each(rows, &shell.info/1)
   end
 
-  defp summary(:not_in_hex) do
+  defp summary(:not_in_hex, _check_osi_approved) do
     IO.ANSI.format([:red, "not in Hex"])
   end
 
