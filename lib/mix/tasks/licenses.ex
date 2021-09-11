@@ -8,7 +8,6 @@ defmodule Mix.Tasks.Licenses do
   """
   @shortdoc "Shows a summary of your dependecies' licenses."
 
-
   use Mix.Task
 
   @impl Mix.Task
@@ -35,7 +34,8 @@ defmodule Mix.Tasks.Licenses do
         IO.ANSI.format([dep, summary])
       end)
 
-    header =  IO.ANSI.format([:faint, String.pad_trailing("Dependency", first_column_width), "Status"])
+    header =
+      IO.ANSI.format([:faint, String.pad_trailing("Dependency", first_column_width), "Status"])
 
     shell = Mix.shell()
 
@@ -60,14 +60,16 @@ defmodule Mix.Tasks.Licenses do
       not_recognized_message = "#{count_not_recognized} not recognized"
 
       message =
-      cond do
-        count_not_approved > 0 && count_not_recognized > 0 ->
-          not_approved_message <> ", " <> not_recognized_message
-        count_not_approved > 0 ->
-          not_approved_message
-        count_not_recognized > 0 ->
-          not_recognized_message
-      end
+        cond do
+          count_not_approved > 0 && count_not_recognized > 0 ->
+            not_approved_message <> ", " <> not_recognized_message
+
+          count_not_approved > 0 ->
+            not_approved_message
+
+          count_not_recognized > 0 ->
+            not_recognized_message
+        end
 
       IO.ANSI.format([:red, message])
     end

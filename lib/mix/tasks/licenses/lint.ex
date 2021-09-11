@@ -24,11 +24,11 @@ defmodule Mix.Tasks.Licenses.Lint do
         case status do
           :not_approved ->
             Mix.shell().info(" - \"#{license}\" is not OSI-approved.")
+
           :not_recognized ->
             Mix.shell().info(" - \"#{license}\" is not an SPDX ID")
         end
       end)
-
 
       exit({:shutdown, 1})
     end
