@@ -19,6 +19,7 @@ defmodule Mix.Tasks.Licenses.Lint do
 
     * `--reuse` - additionally check if the licenses declared in `mix.exs` match those in the `LICENSES` directory
       according to the [REUSE specification](https://reuse.software).
+    * `--osi` - additionally check if all licenses are approved by the [Open Source Initiative](https://opensource.org/licenses)
   """
   use Mix.Task
 
@@ -75,11 +76,25 @@ defmodule Mix.Tasks.Licenses.Lint do
       error?
     end
 
-    unsafe_licenses = Enum.filter(result, fn {_license, status} -> status != :osi_approved end)
+    check_osi_approved = "--osi" in args
+
+    allowed_statuses =
+      if check_osi_approved do
+        [:osi_approved]
+      else
+        [:osi_approved, :not_approved]
+      end
+
+    unsafe_licenses = Enum.filter(result, fn {_license, status} -> status not in allowed_statuses end)
 
     error? =
     if Enum.empty?(unsafe_licenses) do
-      Mix.shell().info("This project's licenses are all recognized and OSI-approved.")
+      if check_osi_approved do
+        Mix.shell().info("This project's licenses are all recognized and OSI-approved.")
+      else
+        Mix.shell().info("This project's licenses are all valid SPDX identifiers.")
+      end
+
       error?
     else
       Mix.shell().info("This project has #{Enum.count(unsafe_licenses)} unsafe licenses:")
