@@ -39,16 +39,17 @@ There are a few mix tasks in this project.
 ```
 $ mix licenses
 Dependency  Status
-ex_doc      all OSI approved
-httpoison   all OSI approved
-poison      all OSI approved
+ex_doc      all valid
+httpoison   all valid
+poison      all valid
 ```
 
-`mix licenses.explain` will print the dependencies that have non-OSI-approved or unidentifiable licenses.
+`mix licenses.explain` will print the dependencies that have unidentifiable licenses.
 License IDs defined by the package should be an identifier on the [SPDX License List](https://spdx.org/licences).
+You can also pass the `--osi` flag to all these tasks in order to ensure all licenses are approved by the [Open Source Initiative](https://opensource.org).
 
 ```
-$ mix licenses.explain
+$ mix licenses.explain --osi
 dependency_a has 1 unsafe licenses:
  - "MIT License" is not an SPDX ID.
 dependency_b has 1 unsafe licenses:
@@ -69,10 +70,10 @@ This project has 1 unsafe licenses:
 - ~~Summary of dependency licenses~~
 - ~~Feedback on specific license problems~~
 - ~~Lint license field in current project~~
-- Check if license list matches all licenses in the `LICENSES` dir (as part of the [REUSE specification](https://reuse.software))
+- ~~Check if license list matches all licenses in the `LICENSES` dir (as part of the [REUSE specification](https://reuse.software))~~
+- ~~Split out OSI check into an `--osi` flag in case you don't care about OSI approval~~
 - Read dependencies directly from `mix.lock` so we have exact version numbers
 - Check `deps/` directory to read licenses directly from the `mix.exs` of dependencies
-- Split out OSI check into an `--osi` flag in case you don't care about OSI approval
 - Read license IDs from an `.approved-licenses` file to specify the licenses you support, and fail all others
 
 ## Maintainer
