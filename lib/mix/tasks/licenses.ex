@@ -65,7 +65,9 @@ defmodule Mix.Tasks.Licenses do
     count_not_approved = Enum.count(values, &(&1 == :not_approved))
     count_not_recognized = Enum.count(values, &(&1 == :not_recognized))
 
-    check_passed? = (check_osi_approved && all_approved) or count_not_approved == 0 and count_not_recognized == 0
+    check_passed? =
+      (check_osi_approved && all_approved) or
+        (count_not_approved == 0 and count_not_recognized == 0)
 
     if check_passed? do
       if check_osi_approved do

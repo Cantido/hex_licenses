@@ -23,11 +23,12 @@ defmodule Mix.Tasks.Licenses.Explain do
     check_osi_approved = "--osi" in args
 
     allowed_statuses =
-          if check_osi_approved do
-            [:osi_approved]
-          else
-            [:osi_approved, :not_approved]
-          end
+      if check_osi_approved do
+        [:osi_approved]
+      else
+        [:osi_approved, :not_approved]
+      end
+
     unsafe_deps =
       HexLicenses.license_check()
       |> Enum.reject(fn {_deps, licenses} -> licenses == :not_in_hex end)
