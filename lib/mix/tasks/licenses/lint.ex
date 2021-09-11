@@ -13,7 +13,7 @@ defmodule Mix.Tasks.Licenses.Lint do
 
   ## Configuration
 
-    * `:package` - must be a list containing SPDX license identifiers, for example `["MIT"]`
+    * `:package` - contain a `:licenses` list, which must be a list containing SPDX license identifiers, for example `["MIT"]`
 
   ## Command line options
 
