@@ -32,53 +32,7 @@ defmodule Mix.Tasks.Licenses.Lint do
 
     error? =
       if "--reuse" in args do
-        mix_licenses =
-          Mix.Project.config()
-          |> Access.fetch!(:package)
-          |> Access.fetch!(:licenses)
-          |> MapSet.new()
-
-        file_licenses =
-          Mix.Project.config_files()
-          |> Enum.find(fn config_file -> Path.basename(config_file) == "mix.exs" end)
-          |> Path.dirname()
-          |> Path.join("LICENSES")
-          |> File.ls!()
-          |> Enum.map(fn license_file -> Path.basename(license_file, ".txt") end)
-          |> MapSet.new()
-
-        missing_from_mix = MapSet.difference(file_licenses, mix_licenses)
-        missing_from_dir = MapSet.difference(mix_licenses, file_licenses)
-
-        if Enum.any?(missing_from_mix) do
-          Mix.shell().info(
-            "This project has licenses in LICENSES/ that are not declared in mix.exs:"
-          )
-
-          Enum.each(missing_from_mix, fn license ->
-            Mix.shell().info(" - #{license}")
-          end)
-        end
-
-        if Enum.any?(missing_from_dir) do
-          Mix.shell().info(
-            "This project has licenses declared in mix.exs that are not present in LICENSES/"
-          )
-
-          Enum.each(missing_from_dir, fn license ->
-            Mix.shell().info(" - #{license}")
-          end)
-        end
-
-        if Enum.empty?(missing_from_mix) and Enum.empty?(missing_from_dir) do
-          Mix.shell().info(
-            "This project's declared licenses match the files in the LICENSES/ directory"
-          )
-
-          error?
-        else
-          true
-        end
+        check_reuse_spec() || error?
       else
         error?
       end
@@ -122,6 +76,54 @@ defmodule Mix.Tasks.Licenses.Lint do
 
     if error? do
       exit({:shutdown, 1})
+    end
+  end
+
+  defp check_reuse_spec do
+    mix_licenses =
+      Mix.Project.config()
+      |> Access.fetch!(:package)
+      |> Access.fetch!(:licenses)
+      |> MapSet.new()
+
+    file_licenses =
+      Mix.Project.config_files()
+      |> Enum.find(fn config_file -> Path.basename(config_file) == "mix.exs" end)
+      |> Path.dirname()
+      |> Path.join("LICENSES")
+      |> File.ls!()
+      |> Enum.map(fn license_file -> Path.basename(license_file, ".txt") end)
+      |> MapSet.new()
+
+    missing_from_mix = MapSet.difference(file_licenses, mix_licenses)
+    missing_from_dir = MapSet.difference(mix_licenses, file_licenses)
+
+    if Enum.any?(missing_from_mix) do
+      Mix.shell().info("This project has licenses in LICENSES/ that are not declared in mix.exs:")
+
+      Enum.each(missing_from_mix, fn license ->
+        Mix.shell().info(" - #{license}")
+      end)
+    end
+
+    if Enum.any?(missing_from_dir) do
+      Mix.shell().info(
+        "This project has licenses declared in mix.exs that are not present in LICENSES/"
+      )
+
+      Enum.each(missing_from_dir, fn license ->
+        Mix.shell().info(" - #{license}")
+      end)
+    end
+
+    if Enum.empty?(missing_from_mix) and Enum.empty?(missing_from_dir) do
+      Mix.shell().info(
+        "This project's declared licenses match the files in the LICENSES/ directory"
+      )
+
+      false
+    else
+      true
     end
   end
 end
