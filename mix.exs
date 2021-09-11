@@ -8,6 +8,7 @@ defmodule HexLicenses.MixProject do
   def project do
     [
       app: :hex_licenses,
+      description: "Mix tasks to help you use open-source licenses",
       version: "0.1.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
