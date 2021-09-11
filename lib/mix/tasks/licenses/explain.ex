@@ -27,7 +27,7 @@ defmodule Mix.Tasks.Licenses.Explain do
       Mix.shell().info("#{dep} has #{Enum.count(unsafe_licenses)} unsafe licenses:")
 
       Enum.each(licenses, fn {license, status} ->
-        Mix.shell().info(status_line(status))
+        Mix.shell().info(status_line(license, status))
       end)
     end)
 
@@ -38,11 +38,11 @@ defmodule Mix.Tasks.Licenses.Explain do
     end
   end
 
-  def status_line(:not_approved) do
+  def status_line(license, :not_approved) do
     " - \"#{license}\" is not OSI-approved."
   end
 
-  def status_line(:not_recognized) do
+  def status_line(license, :not_recognized) do
     " - \"#{license}\" is not an SPDX ID."
   end
 end
