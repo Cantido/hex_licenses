@@ -7,20 +7,26 @@ defmodule Mix.Tasks.Licenses do
   Lists all dependencies along with a summary of their licenses.
 
   This task checks each entry in dependency package's `:licenses` list against the SPDX License List.
-  If the license is listed, this task will then see if it is approved by the Open Source Initiative.
 
-  To see details about licenses that are not found in the SPDX, or are not approved by the OSI, use `mix licenses.explain`.
+  To see details about licenses that are not found in the SPDX list, use `mix licenses.explain`.
+
+  ## Command line options
+
+    * `--osi` - additionally check if all licenses are approved by the [Open Source Initiative](https://opensource.org/licenses)
+
   """
   @shortdoc "Lists all dependencies along with a summary of their licenses."
 
   use Mix.Task
 
   @impl Mix.Task
-  def run(_args) do
+  def run(args) do
+    check_osi_approved = "--osi" in args
+
     check =
       HexLicenses.license_check()
       |> Map.new(fn {dep, licenses} ->
-        {dep, summary(licenses)}
+        {dep, summary(licenses, check_osi_approved)}
       end)
 
     first_column_width =
@@ -52,24 +58,31 @@ defmodule Mix.Tasks.Licenses do
     IO.ANSI.format([:red, "not in Hex"])
   end
 
-  defp summary(licenses) when is_map(licenses) do
+  defp summary(licenses, check_osi_approved) when is_map(licenses) do
     values = Map.values(licenses)
 
-    if Enum.all?(values, &(&1 == :osi_approved)) do
-      IO.ANSI.format([:green, "all OSI approved"])
-    else
-      count_not_approved = Enum.count(values, &(&1 == :not_approved))
-      count_not_recognized = Enum.count(values, &(&1 == :not_recognized))
+    all_approved = Enum.all?(values, &(&1 == :osi_approved))
+    count_not_approved = Enum.count(values, &(&1 == :not_approved))
+    count_not_recognized = Enum.count(values, &(&1 == :not_recognized))
 
+    check_passed? = (check_osi_approved && all_approved) or count_not_approved == 0 and count_not_recognized == 0
+
+    if check_passed? do
+      if check_osi_approved do
+        IO.ANSI.format([:green, "all OSI approved"])
+      else
+        IO.ANSI.format([:green, "All valid"])
+      end
+    else
       not_approved_message = "#{count_not_approved} not OSI approved"
       not_recognized_message = "#{count_not_recognized} not recognized"
 
       message =
         cond do
-          count_not_approved > 0 && count_not_recognized > 0 ->
+          check_osi_approved && count_not_approved > 0 && count_not_recognized > 0 ->
             not_approved_message <> ", " <> not_recognized_message
 
-          count_not_approved > 0 ->
+          check_osi_approved && count_not_approved > 0 ->
             not_approved_message
 
           count_not_recognized > 0 ->
