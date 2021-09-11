@@ -30,7 +30,8 @@ defmodule HexLicenses.MixProject do
       licenses: ["MIT", "CC-BY-4.0", "CC0-1.0"],
       links: %{
         "GitHub" => "https://github.com/Cantido/hex_licenses",
-        "sourcehut" => "https://sr.ht/~cosmicrose/hex_licenses"
+        "sourcehut" => "https://sr.ht/~cosmicrose/hex_licenses",
+        "Sponsor" => "https://liberapay.com/rosa"
       }
     ]
   end
