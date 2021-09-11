@@ -6,6 +6,11 @@ SPDX-License-Identifier: MIT
 
 # HexLicenses
 
+[![Hex.pm](https://img.shields.io/hexpm/v/hex_licenses)](https://hex.pm/packages/hex_licenses/)
+[![builds.sr.ht status](https://builds.sr.ht/~cosmicrose/hex_licenses.svg)](https://builds.sr.ht/~cosmicrose/hex_licenses?)
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
+
 A Mix tool to fetch the licenses of your dependences.
 
 ## Installation
