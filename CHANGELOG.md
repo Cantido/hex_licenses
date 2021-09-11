@@ -15,8 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `mix licenses`: Summary output of all dependencies
+- `mix licenses` - Summarize dependency licenses
+- `mix licenses.explain` - Show unrecognized and non-approved licenses
+- `mix licenses.lint` - Ensure a project has recognized license identifiers
 
 
 [Unreleased]: https://git.sr.ht/~cosmicrose/hex_licenses/log
-[0.1.0]: https://git.sr.ht/~cosmicrose/hex_licenses/refs/v1.0.0
+[0.1.0]: https://git.sr.ht/~cosmicrose/hex_licenses/refs/v0.1.0
