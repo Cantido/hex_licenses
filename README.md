@@ -77,6 +77,14 @@ This project has 1 unsafe licenses:
 - Check `deps/` directory to read licenses directly from the `mix.exs` of dependencies
 - Read license IDs from an `.approved-licenses` file to specify the licenses you support, and fail all others
 
+## Similar Projects
+
+These tools also help you deal with licenses.
+Please feel free to add your own to this list!
+
+- [`reuse`](https://reuse.software) - helps your project follow the REUSE 3.0 Specification
+- [`sbom`](https://hex.pm/sbom) - generates a software bill-of-materials of your dependencies in CycloneDX format
+
 ## Maintainer
 
 This project was developed by [Rosa Richter](https://about.me/rosa.richter).
