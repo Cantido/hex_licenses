@@ -61,19 +61,19 @@ defmodule HexLicenses do
   end
 
   defp license_for_package(package_name) do
-    resp = HTTPoison.get!("https://hex.pm/api/packages/#{package_name}")
-
-    if resp.status_code == 200 do
-      licenses =
-        resp.body
-        |> Poison.decode!()
-        |> Map.fetch!("meta")
-        |> Map.fetch!("licenses")
-
+    with {:ok, metadata} <- hex_metadata(package_name),
+         licenses = List.keyfind(metadata, "licenses", 0) |> elem(1) do
       {:ok, licenses}
-    else
-      {:error, :not_in_hex}
     end
+
+  end
+
+  defp hex_metadata(package_name) do
+    Mix.Project.deps_path()
+    |> Path.join(package_name)
+    |> Path.join("hex_metadata.config")
+    |> String.to_charlist()
+    |> :file.consult()
   end
 
   defp spdx_license_list do
