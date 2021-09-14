@@ -83,7 +83,7 @@ These tools also help you deal with licenses.
 Please feel free to add your own to this list!
 
 - [`reuse`](https://reuse.software) - helps your project follow the REUSE 3.0 Specification
-- [`sbom`](https://hex.pm/sbom) - generates a software bill-of-materials of your dependencies in CycloneDX format
+- [`sbom`](https://hex.pm/packages/sbom) - generates a software bill-of-materials of your dependencies in CycloneDX format
 
 ## Maintainer
 
