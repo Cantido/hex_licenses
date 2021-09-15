@@ -77,8 +77,8 @@ This project has 1 unsafe licenses:
 - ~~Lint license field in current project~~
 - ~~Check if license list matches all licenses in the `LICENSES` dir (as part of the [REUSE specification](https://reuse.software))~~
 - ~~Split out OSI check into an `--osi` flag in case you don't care about OSI approval~~
-- Read dependencies directly from `mix.lock` so we have exact version numbers
-- Check `deps/` directory to read licenses directly from the `mix.exs` of dependencies
+- ~~Read dependencies directly from `mix.lock` so we have exact version numbers~~
+- ~~Check `deps/` directory to read licenses directly from the `mix.exs` of dependencies~~
 - Read license IDs from an `.approved-licenses` file to specify the licenses you support, and fail all others
 
 ## Similar Projects
