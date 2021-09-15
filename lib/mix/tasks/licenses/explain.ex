@@ -30,7 +30,8 @@ defmodule Mix.Tasks.Licenses.Explain do
       end
 
     unsafe_deps =
-      HexLicenses.license_check()
+      HexLicenses.SPDX.licenses()
+      |> HexLicenses.license_check()
       |> Enum.reject(fn {_deps, licenses} -> licenses == :not_in_hex end)
       |> Enum.filter(fn {_dep, licenses} ->
         Enum.any?(licenses, fn {_license, status} ->

@@ -7,33 +7,25 @@ defmodule HexLicenses do
   Documentation for `HexLicenses`.
   """
 
-  def lint do
-    {:ok, _} = HTTPoison.start()
-    package = package()
-    license_list = spdx_license_list()
-    license_osi_approval = Map.new(license_list, &{&1["licenseId"], &1["isOsiApproved"]})
+  alias HexLicenses.Hex
 
+  def lint(package, license_list) do
     if is_nil(package) do
       {:error, :package_not_defined}
     else
       results =
         Map.new(package[:licenses], fn license ->
-          {license, license_status(license, license_osi_approval)}
+          {license, license_status(license, license_list)}
         end)
 
       {:ok, results}
     end
   end
 
-  def license_check do
-    {:ok, _} = HTTPoison.start()
-
-    license_list = spdx_license_list()
-    license_osi_approval = Map.new(license_list, &{&1["licenseId"], &1["isOsiApproved"]})
-
+  def license_check(spdx_licenses) when is_map(spdx_licenses) do
     app_deps()
     |> Task.async_stream(fn dep ->
-      licenses = license_for_package(to_string(dep))
+      licenses = Hex.license_for_package(to_string(dep))
       {dep, licenses}
     end)
     |> Stream.map(fn {:ok, val} -> val end)
@@ -41,7 +33,7 @@ defmodule HexLicenses do
       {dep, {:ok, licenses}} ->
         license_statuses =
           Map.new(licenses, fn license ->
-            {license, license_status(license, license_osi_approval)}
+            {license, license_status(license, spdx_licenses)}
           end)
 
         {dep, license_statuses}
@@ -52,35 +44,13 @@ defmodule HexLicenses do
     |> Map.new()
   end
 
-  def license_status(license, license_map) do
+  def license_status(license, license_map) when is_map(license_map) do
     cond do
       not Map.has_key?(license_map, license) -> :not_recognized
-      license_map[license] -> :osi_approved
+      license_map[license].deprecated? -> :deprecated
+      license_map[license].osi_approved? -> :osi_approved
       true -> :not_approved
     end
-  end
-
-  defp license_for_package(package_name) do
-    with {:ok, metadata} <- hex_metadata(package_name),
-         licenses = List.keyfind(metadata, "licenses", 0) |> elem(1) do
-      {:ok, licenses}
-    end
-
-  end
-
-  defp hex_metadata(package_name) do
-    Mix.Project.deps_path()
-    |> Path.join(package_name)
-    |> Path.join("hex_metadata.config")
-    |> String.to_charlist()
-    |> :file.consult()
-  end
-
-  defp spdx_license_list do
-    HTTPoison.get!("https://spdx.org/licenses/licenses.json")
-    |> Map.fetch!(:body)
-    |> Poison.decode!()
-    |> Map.fetch!("licenses")
   end
 
   defp app_deps do

@@ -26,7 +26,9 @@ defmodule Mix.Tasks.Licenses.Lint do
   @shortdoc "Check the current project's licenses."
 
   def run(args) do
-    {:ok, result} = HexLicenses.lint()
+    package = Mix.Project.get!().project()[:package]
+    license_list = HexLicenses.SPDX.licenses()
+    {:ok, result} = HexLicenses.lint(package, license_list)
 
     error? = false
 

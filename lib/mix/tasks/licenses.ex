@@ -23,8 +23,10 @@ defmodule Mix.Tasks.Licenses do
   def run(args) do
     check_osi_approved = "--osi" in args
 
+    license_list = HexLicenses.SPDX.licenses()
+
     check =
-      HexLicenses.license_check()
+      HexLicenses.license_check(license_list)
       |> Map.new(fn {dep, licenses} ->
         {dep, summary(licenses, check_osi_approved)}
       end)
