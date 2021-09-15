@@ -94,6 +94,8 @@ Participate in our [mailing list](https://lists.sr.ht/~cosmicrose/hex_licenses)!
 This is a small project, but I care about the people that care about my work.
 I'm also on [keybase](https://keybase.io/cantido) if you need to message me directly.
 
+I also have a post on the Elixir Forum about this project: [`hex_licenses` - Check your dependency licenses and lint your own](https://elixirforum.com/t/hex-license-check-your-dependency-licenses-and-lint-your-own/42341).
+
 ---
 If you like this contribution guide, please give a star to [Nadia Eghbal]'s [`contributing-template`] project on GitHub.
 It was a great help.
