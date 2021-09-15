@@ -1,7 +1,14 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule HexLicenses.Hex do
+  @moduledoc """
+  Functions for working with Hex package data.
+  """
   def license_for_package(package_name) do
-    with {:ok, metadata} <- metadata(package_name),
-         licenses = List.keyfind(metadata, "licenses", 0) |> elem(1) do
+    with {:ok, metadata} <- metadata(package_name) do
+      licenses = List.keyfind(metadata, "licenses", 0) |> elem(1)
       {:ok, licenses}
     end
   end

@@ -28,6 +28,7 @@ defmodule Mix.Tasks.Licenses.Lint do
 
   def run(args) do
     package = Mix.Project.get!().project()[:package]
+
     license_list =
       if "--update" in args do
         HexLicenses.SPDX.fetch_licenses()
@@ -71,15 +72,7 @@ defmodule Mix.Tasks.Licenses.Lint do
       else
         Mix.shell().info("This project has #{Enum.count(unsafe_licenses)} unsafe licenses:")
 
-        Enum.each(unsafe_licenses, fn {license, status} ->
-          case status do
-            :not_approved ->
-              Mix.shell().info(" - \"#{license}\" is not OSI-approved.")
-
-            :not_recognized ->
-              Mix.shell().info(" - \"#{license}\" is not an SPDX ID")
-          end
-        end)
+        Enum.each(unsafe_licenses, &print_status/1)
 
         true
       end
@@ -87,6 +80,14 @@ defmodule Mix.Tasks.Licenses.Lint do
     if error? do
       exit({:shutdown, 1})
     end
+  end
+
+  defp print_status({license, :not_approved}) do
+    Mix.shell().info(" - \"#{license}\" is not OSI-approved.")
+  end
+
+  defp print_status({license, :not_recognized}) do
+    Mix.shell().info(" - \"#{license}\" is not an SPDX ID")
   end
 
   defp check_reuse_spec do

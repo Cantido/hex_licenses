@@ -28,6 +28,7 @@ compile-deps:
 build:
   FROM +compile-deps
 
+  COPY priv ./priv
   COPY lib ./lib
 
   RUN MIX_ENV=$MIX_ENV mix compile

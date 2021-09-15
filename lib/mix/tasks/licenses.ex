@@ -76,7 +76,7 @@ defmodule Mix.Tasks.Licenses do
 
     check_passed? =
       (check_osi_approved && all_approved) or
-        (count_not_recognized == 0)
+        count_not_recognized == 0
 
     if check_passed? do
       pass_message(check_osi_approved)
@@ -102,7 +102,6 @@ defmodule Mix.Tasks.Licenses do
 
         count_not_recognized > 0 ->
           not_recognized_message
-
       end
 
     IO.ANSI.format([:red, message])

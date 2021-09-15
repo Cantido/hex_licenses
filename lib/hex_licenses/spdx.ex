@@ -1,6 +1,15 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule HexLicenses.SPDX do
+  @moduledoc """
+  Functions for fetching and parsing SPDX license lists, including the locally-stored one.
+  """
+
   def fetch_licenses do
     {:ok, _} = HTTPoison.start()
+
     HTTPoison.get!("https://spdx.org/licenses/licenses.json")
     |> Map.fetch!(:body)
   end
