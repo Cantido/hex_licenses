@@ -1,5 +1,6 @@
 defmodule HexLicenses.SPDX do
   def fetch_licenses do
+    {:ok, _} = HTTPoison.start()
     HTTPoison.get!("https://spdx.org/licenses/licenses.json")
     |> Map.fetch!(:body)
   end

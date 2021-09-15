@@ -13,6 +13,7 @@ defmodule Mix.Tasks.Licenses do
   ## Command line options
 
     * `--osi` - additionally check if all licenses are approved by the [Open Source Initiative](https://opensource.org/licenses)
+    * `--update` - pull down a fresh copy of the SPDX license list instead of using the version checked in with this tool.
 
   """
   @shortdoc "Lists all dependencies along with a summary of their licenses."
@@ -23,7 +24,13 @@ defmodule Mix.Tasks.Licenses do
   def run(args) do
     check_osi_approved = "--osi" in args
 
-    license_list = HexLicenses.SPDX.licenses()
+    license_list =
+      if "--update" in args do
+        HexLicenses.SPDX.fetch_licenses()
+        |> HexLicenses.SPDX.parse_licenses()
+      else
+        HexLicenses.SPDX.licenses()
+      end
 
     check =
       HexLicenses.license_check(license_list)

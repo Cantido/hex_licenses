@@ -13,6 +13,7 @@ defmodule Mix.Tasks.Licenses.Explain do
   ## Command line options
 
     * `--osi` - additionally check if all licenses are approved by the [Open Source Initiative](https://opensource.org/licenses)
+    * `--update` - pull down a fresh copy of the SPDX license list instead of using the version checked in with this tool.
   """
 
   use Mix.Task
@@ -29,8 +30,16 @@ defmodule Mix.Tasks.Licenses.Explain do
         [:osi_approved, :not_approved]
       end
 
+    license_list =
+      if "--update" in args do
+        HexLicenses.SPDX.fetch_licenses()
+        |> HexLicenses.SPDX.parse_licenses()
+      else
+        HexLicenses.SPDX.licenses()
+      end
+
     unsafe_deps =
-      HexLicenses.SPDX.licenses()
+      license_list
       |> HexLicenses.license_check()
       |> Enum.reject(fn {_deps, licenses} -> licenses == :not_in_hex end)
       |> Enum.filter(fn {_dep, licenses} ->

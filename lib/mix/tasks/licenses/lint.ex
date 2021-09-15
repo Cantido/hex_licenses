@@ -20,6 +20,7 @@ defmodule Mix.Tasks.Licenses.Lint do
     * `--reuse` - additionally check if the licenses declared in `mix.exs` match those in the `LICENSES` directory
       according to the [REUSE specification](https://reuse.software).
     * `--osi` - additionally check if all licenses are approved by the [Open Source Initiative](https://opensource.org/licenses)
+    * `--update` - pull down a fresh copy of the SPDX license list instead of using the version checked in with this tool.
   """
   use Mix.Task
 
@@ -27,7 +28,14 @@ defmodule Mix.Tasks.Licenses.Lint do
 
   def run(args) do
     package = Mix.Project.get!().project()[:package]
-    license_list = HexLicenses.SPDX.licenses()
+    license_list =
+      if "--update" in args do
+        HexLicenses.SPDX.fetch_licenses()
+        |> HexLicenses.SPDX.parse_licenses()
+      else
+        HexLicenses.SPDX.licenses()
+      end
+
     {:ok, result} = HexLicenses.lint(package, license_list)
 
     error? = false
