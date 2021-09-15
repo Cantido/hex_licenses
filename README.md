@@ -39,7 +39,8 @@ The docs can be found at [https://hexdocs.pm/hex_licenses](https://hexdocs.pm/he
 
 There are a few mix tasks in this project.
 
-`mix licenses` will print a summary of your dependencies and the licenses they are offered under.
+`mix licenses` will print a summary of your dependencies and the status of their licenses.
+License IDs defined by the package should be an identifier on the [SPDX License List](https://spdx.org/licences).
 
 ```
 $ mix licenses
@@ -50,7 +51,6 @@ poison      all valid
 ```
 
 `mix licenses.explain` will print the dependencies that have unidentifiable licenses.
-License IDs defined by the package should be an identifier on the [SPDX License List](https://spdx.org/licences).
 You can also pass the `--osi` flag to all these tasks in order to ensure all licenses are approved by the [Open Source Initiative](https://opensource.org).
 
 ```
