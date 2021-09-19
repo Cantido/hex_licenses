@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2021 Coraline Ada Ehmke
+
+SPDX-License-Identifier: MIT
+-->
 
 # Contributor Covenant Code of Conduct
 
