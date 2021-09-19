@@ -28,8 +28,14 @@ defmodule HexLicenses.SPDX do
     end)
   end
 
+  def licenses_path do
+    Application.app_dir(:hex_licenses, "priv/licenses.exs")
+  end
+
   def licenses do
-    {data, _bindings} = Code.eval_file("priv/licenses.exs")
+    {data, _bindings} =
+      licenses_path()
+      |> Code.eval_file()
     data
   end
 end
