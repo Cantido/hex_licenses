@@ -29,15 +29,7 @@ defmodule Mix.Tasks.Licenses.Lint do
   def run(args) do
     package = Mix.Project.get!().project()[:package]
 
-    if is_nil(package) do
-      Mix.shell().error("This project does not have :package key defined in mix.exs.")
-      exit({:shutdown, 1})
-    end
-
-    if Enum.empty?(Keyword.get(package, :licenses, [])) do
-      Mix.shell().error("This project's :package config has a nil or empty :licenses list.")
-      exit({:shutdown, 1})
-    end
+    validate_package!(package)
 
     license_list =
       if "--update" in args do
@@ -88,6 +80,18 @@ defmodule Mix.Tasks.Licenses.Lint do
       end
 
     if error? do
+      exit({:shutdown, 1})
+    end
+  end
+
+  defp validate_package!(package) do
+    if is_nil(package) do
+      Mix.shell().error("This project does not have :package key defined in mix.exs.")
+      exit({:shutdown, 1})
+    end
+
+    if Enum.empty?(Keyword.get(package, :licenses, [])) do
+      Mix.shell().error("This project's :package config has a nil or empty :licenses list.")
       exit({:shutdown, 1})
     end
   end
