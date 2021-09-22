@@ -21,7 +21,7 @@ The package can be installed by adding `hex_licenses` to your list of dependenci
 ```elixir
 def deps do
   [
-    {:hex_licenses, "~> 0.3.0", only: [:dev], runtime: false}
+    {:hex_licenses, "~> 0.3", only: [:dev], runtime: false}
   ]
 end
 ```
