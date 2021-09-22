@@ -36,6 +36,7 @@ defmodule HexLicenses.SPDX do
     {data, _bindings} =
       licenses_path()
       |> Code.eval_file()
+
     data
   end
 end
