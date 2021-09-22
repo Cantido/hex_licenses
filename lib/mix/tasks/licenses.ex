@@ -70,40 +70,59 @@ defmodule Mix.Tasks.Licenses do
   defp summary(licenses, check_osi_approved) when is_map(licenses) do
     values = Map.values(licenses)
 
-    all_approved = Enum.all?(values, &(&1 == :osi_approved))
     count_not_approved = Enum.count(values, &(&1 == :not_approved))
     count_not_recognized = Enum.count(values, &(&1 == :not_recognized))
+    count_deprecated = Enum.count(values, &(&1 == :deprecated))
 
-    check_passed? =
-      (check_osi_approved && all_approved) or
-        count_not_recognized == 0
+    osi_check_passed? =
+      if check_osi_approved do
+        count_not_approved == 0
+      else
+        true
+      end
+
+    id_check_passed? = count_not_recognized == 0
+    deprecation_check_passed? = count_deprecated == 0
+
+    check_passed? = osi_check_passed? && id_check_passed? && deprecation_check_passed?
 
     if check_passed? do
-      pass_message(check_osi_approved)
+      if check_osi_approved do
+        all_osi_approved_message()
+      else
+        all_valid_message()
+      end
     else
-      fail_message(count_not_approved, count_not_recognized, check_osi_approved)
+      messages = []
+
+      messages =
+        if osi_check_passed? do
+          messages
+        else
+          [not_osi_approved_message(count_not_approved) | messages]
+        end
+
+      messages =
+        if id_check_passed? do
+          messages
+        else
+          [not_recognized_message(count_not_recognized) | messages]
+        end
+
+      messages =
+        if deprecation_check_passed? do
+          messages
+        else
+          [deprecated_message(count_deprecated) | messages]
+        end
+
+      Enum.join(messages)
     end
   end
 
-  defp pass_message(true), do: IO.ANSI.format([:green, "all OSI approved"])
-  defp pass_message(false), do: IO.ANSI.format([:green, "all valid"])
-
-  defp fail_message(count_not_approved, count_not_recognized, check_osi_approved) do
-    not_approved_message = "#{count_not_approved} not OSI approved"
-    not_recognized_message = "#{count_not_recognized} not recognized"
-
-    message =
-      cond do
-        check_osi_approved && count_not_approved > 0 && count_not_recognized > 0 ->
-          not_approved_message <> ", " <> not_recognized_message
-
-        check_osi_approved && count_not_approved > 0 ->
-          not_approved_message
-
-        count_not_recognized > 0 ->
-          not_recognized_message
-      end
-
-    IO.ANSI.format([:red, message])
-  end
+  defp all_osi_approved_message, do: IO.ANSI.format([:green, "all OSI approved"])
+  defp all_valid_message, do: IO.ANSI.format([:green, "all valid"])
+  defp not_osi_approved_message(count), do: IO.ANSI.format([:red, "#{count} not OSI approved"])
+  defp not_recognized_message(count), do: IO.ANSI.format([:red, "#{count} not OSI approved"])
+  defp deprecated_message(count), do: IO.ANSI.format([:red, "#{count} deprecated"])
 end
