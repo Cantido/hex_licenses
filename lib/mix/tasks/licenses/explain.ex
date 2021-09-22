@@ -71,11 +71,15 @@ defmodule Mix.Tasks.Licenses.Explain do
     end
   end
 
-  def status_line(license, :not_approved) do
+  defp status_line(license, :not_approved) do
     " - \"#{license}\" is not OSI-approved."
   end
 
-  def status_line(license, :not_recognized) do
+  defp status_line(license, :not_recognized) do
     " - \"#{license}\" is not an SPDX ID."
+  end
+
+  defp status_line(license, :deprecated) do
+    " - \"#{license}\" is deprecated."
   end
 end
