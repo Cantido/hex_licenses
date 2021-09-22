@@ -38,7 +38,7 @@ defmodule HexLicenses do
 
         {dep, license_statuses}
 
-      {dep, {:error, :not_in_hex}} ->
+      {dep, {:error, :enoent}} ->
         {dep, :not_in_hex}
     end)
     |> Map.new()
@@ -55,9 +55,5 @@ defmodule HexLicenses do
 
   defp app_deps do
     Mix.Project.get!().project()[:deps] |> Enum.map(&elem(&1, 0))
-  end
-
-  defp package do
-    Mix.Project.get!().project()[:package]
   end
 end
