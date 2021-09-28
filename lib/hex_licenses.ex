@@ -8,40 +8,33 @@ defmodule HexLicenses do
   """
 
   alias HexLicenses.Hex
+  alias HexLicenses.Check
 
-  def lint(package, license_list) do
+  def lint(package, checks_to_perform) do
     if is_nil(package) do
       {:error, :package_not_defined}
     else
-      results =
-        Map.new(package[:licenses], fn license ->
-          {license, license_status(license, license_list)}
-        end)
+      results = Enum.map(checks_to_perform, &Check.results(&1, package[:licenses]))
 
       {:ok, results}
     end
   end
 
-  def license_check(spdx_licenses) when is_map(spdx_licenses) do
+  def license_check(checks_to_perform) do
     app_deps()
     |> Task.async_stream(fn dep ->
       licenses = Hex.license_for_package(to_string(dep))
       {dep, licenses}
     end)
     |> Stream.map(fn {:ok, val} -> val end)
-    |> Enum.map(fn
+    |> Map.new(fn
       {dep, {:ok, licenses}} ->
-        license_statuses =
-          Map.new(licenses, fn license ->
-            {license, license_status(license, spdx_licenses)}
-          end)
-
-        {dep, license_statuses}
+        results = Enum.map(checks_to_perform, &Check.results(&1, licenses))
+        {dep, results}
 
       {dep, {:error, :enoent}} ->
         {dep, :not_in_hex}
     end)
-    |> Map.new()
   end
 
   def license_status(license, license_map) when is_map(license_map) do

@@ -17,19 +17,12 @@ defmodule Mix.Tasks.Licenses.Explain do
   """
 
   use Mix.Task
+  alias HexLicenses.Check.{Deprecation, OSIApproval, SPDXListed}
+  alias HexLicenses.Check
 
   @shortdoc "Prints all dependencies with unrecognized or non-OSI-approved licenses."
 
   def run(args) do
-    check_osi_approved = "--osi" in args
-
-    allowed_statuses =
-      if check_osi_approved do
-        [:osi_approved]
-      else
-        [:osi_approved, :not_approved]
-      end
-
     license_list =
       if "--update" in args do
         HexLicenses.SPDX.fetch_licenses()
@@ -38,48 +31,42 @@ defmodule Mix.Tasks.Licenses.Explain do
         HexLicenses.SPDX.licenses()
       end
 
-    unsafe_deps =
-      license_list
-      |> HexLicenses.license_check()
-      |> Enum.reject(fn {_deps, licenses} -> licenses == :not_in_hex end)
-      |> Enum.filter(fn {_dep, licenses} ->
-        Enum.any?(licenses, fn {_license, status} ->
-          status not in allowed_statuses
-        end)
-      end)
+    checks = [
+      SPDXListed.new(license_list),
+      Deprecation.new(license_list)
+    ]
 
-    Enum.sort_by(unsafe_deps, fn {dep, _licenses} -> to_string(dep) end)
-    |> Enum.each(fn {dep, licenses} ->
-      unsafe_licenses =
-        Enum.filter(licenses, fn {_license, status} -> status not in allowed_statuses end)
-
-      Mix.shell().info("#{dep} has #{Enum.count(unsafe_licenses)} unsafe licenses:")
-
-      Enum.each(licenses, fn {license, status} ->
-        Mix.shell().info(status_line(license, status))
-      end)
-    end)
-
-    if Enum.empty?(unsafe_deps) do
-      if check_osi_approved do
-        Mix.shell().info("All dependencies have OSI-approved licenses.")
+    checks =
+      if "--osi" in args do
+        [OSIApproval.new(license_list) | checks]
       else
-        Mix.shell().info("All dependencies have recognized licenses.")
+        checks
       end
+
+    failures =
+      HexLicenses.license_check(checks)
+      |> Enum.map(fn {dep, results} ->
+        failed_results = Enum.reject(results, &Check.pass?/1)
+
+        {dep, failed_results}
+      end)
+      |> Enum.reject(fn {_dep, results} -> Enum.empty?(results) end)
+
+    if Enum.empty?(failures) do
+      IO.puts("All checks passed, nothing to explain.")
     else
-      exit({:shutdown, 1})
+      Enum.each(failures, fn {dep, results} ->
+        failure_messages = Enum.flat_map(results, &Check.list_failures/1)
+
+        shell = Mix.shell()
+
+        shell.info("#{dep}'s licenses have #{Enum.count(failure_messages)} problem(s):")
+
+        failure_messages
+        |> Enum.map(&"- #{&1}")
+        |> Enum.join("\n")
+        |> shell.info()
+      end)
     end
-  end
-
-  defp status_line(license, :not_approved) do
-    " - \"#{license}\" is not OSI-approved."
-  end
-
-  defp status_line(license, :not_recognized) do
-    " - \"#{license}\" is not an SPDX ID."
-  end
-
-  defp status_line(license, :deprecated) do
-    " - \"#{license}\" is deprecated."
   end
 end

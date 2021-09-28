@@ -23,14 +23,12 @@ defmodule Mix.Tasks.Licenses.Lint do
     * `--update` - pull down a fresh copy of the SPDX license list instead of using the version checked in with this tool.
   """
   use Mix.Task
+  alias HexLicenses.Check.{Deprecation, OSIApproval, ReuseSpec, SPDXListed}
+  alias HexLicenses.Check
 
   @shortdoc "Check the current project's licenses."
 
   def run(args) do
-    package = Mix.Project.get!().project()[:package]
-
-    validate_package!(package)
-
     license_list =
       if "--update" in args do
         HexLicenses.SPDX.fetch_licenses()
@@ -39,48 +37,43 @@ defmodule Mix.Tasks.Licenses.Lint do
         HexLicenses.SPDX.licenses()
       end
 
-    {:ok, result} = HexLicenses.lint(package, license_list)
+    checks = [
+      SPDXListed.new(license_list),
+      Deprecation.new(license_list)
+    ]
 
-    error? = false
+    checks =
+      if "--osi" in args do
+        [OSIApproval.new(license_list) | checks]
+      else
+        checks
+      end
 
-    error? =
+    checks =
       if "--reuse" in args do
-        check_reuse_spec() || error?
+        [ReuseSpec.new(licenses_in_dir()) | checks]
       else
-        error?
+        checks
       end
 
-    check_osi_approved = "--osi" in args
+    {:ok, results} =
+      Mix.Project.get!().project()[:package]
+      |> validate_package!()
+      |> HexLicenses.lint(checks)
 
-    allowed_statuses =
-      if check_osi_approved do
-        [:osi_approved]
-      else
-        [:osi_approved, :not_approved]
-      end
+    shell = Mix.shell()
 
-    unsafe_licenses =
-      Enum.filter(result, fn {_license, status} -> status not in allowed_statuses end)
-
-    error? =
-      if Enum.empty?(unsafe_licenses) do
-        if check_osi_approved do
-          Mix.shell().info("This project's licenses are all recognized and OSI-approved.")
-        else
-          Mix.shell().info("This project's licenses are all valid SPDX identifiers.")
+    if Enum.all?(results, &Check.pass?/1) do
+      shell.info("All checks passed.")
+    else
+      Enum.each(results, fn result ->
+        unless Check.pass?(result) do
+          Check.list_failures(result)
+          |> Enum.map(&"- #{&1}")
+          |> Enum.join("\n")
+          |> shell.info()
         end
-
-        error?
-      else
-        Mix.shell().info("This project has #{Enum.count(unsafe_licenses)} unsafe licenses:")
-
-        Enum.each(unsafe_licenses, &print_status/1)
-
-        true
-      end
-
-    if error? do
-      exit({:shutdown, 1})
+      end)
     end
   end
 
@@ -94,61 +87,17 @@ defmodule Mix.Tasks.Licenses.Lint do
       Mix.shell().error("This project's :package config has a nil or empty :licenses list.")
       exit({:shutdown, 1})
     end
+
+    package
   end
 
-  defp print_status({license, :not_approved}) do
-    Mix.shell().info(" - \"#{license}\" is not OSI-approved.")
-  end
-
-  defp print_status({license, :not_recognized}) do
-    Mix.shell().info(" - \"#{license}\" is not an SPDX ID")
-  end
-
-  defp check_reuse_spec do
-    mix_licenses =
-      Mix.Project.config()
-      |> Access.fetch!(:package)
-      |> Access.fetch!(:licenses)
-      |> MapSet.new()
-
-    file_licenses =
-      Mix.Project.config_files()
-      |> Enum.find(fn config_file -> Path.basename(config_file) == "mix.exs" end)
-      |> Path.dirname()
-      |> Path.join("LICENSES")
-      |> File.ls!()
-      |> Enum.map(fn license_file -> Path.basename(license_file, ".txt") end)
-      |> MapSet.new()
-
-    missing_from_mix = MapSet.difference(file_licenses, mix_licenses)
-    missing_from_dir = MapSet.difference(mix_licenses, file_licenses)
-
-    if Enum.any?(missing_from_mix) do
-      Mix.shell().info("This project has licenses in LICENSES/ that are not declared in mix.exs:")
-
-      Enum.each(missing_from_mix, fn license ->
-        Mix.shell().info(" - #{license}")
-      end)
-    end
-
-    if Enum.any?(missing_from_dir) do
-      Mix.shell().info(
-        "This project has licenses declared in mix.exs that are not present in LICENSES/"
-      )
-
-      Enum.each(missing_from_dir, fn license ->
-        Mix.shell().info(" - #{license}")
-      end)
-    end
-
-    if Enum.empty?(missing_from_mix) and Enum.empty?(missing_from_dir) do
-      Mix.shell().info(
-        "This project's declared licenses match the files in the LICENSES/ directory"
-      )
-
-      false
-    else
-      true
-    end
+  defp licenses_in_dir do
+    Mix.Project.config_files()
+    |> Enum.find(fn config_file -> Path.basename(config_file) == "mix.exs" end)
+    |> Path.dirname()
+    |> Path.join("LICENSES")
+    |> File.ls!()
+    |> Enum.map(fn license_file -> Path.basename(license_file, ".txt") end)
+    |> MapSet.new()
   end
 end
