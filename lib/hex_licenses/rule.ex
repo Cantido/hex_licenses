@@ -1,4 +1,4 @@
-defprotocol HexLicenses.Check do
+defprotocol HexLicenses.Rule do
   @moduledoc """
   A protocol for objects that check dependency licenses.
   """

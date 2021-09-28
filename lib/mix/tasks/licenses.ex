@@ -19,8 +19,8 @@ defmodule Mix.Tasks.Licenses do
   @shortdoc "Lists all dependencies along with a summary of their licenses."
 
   use Mix.Task
-  alias HexLicenses.Check.{Deprecation, OSIApproval, SPDXListed}
-  alias HexLicenses.Check
+  alias HexLicenses.Rule.{Deprecation, OSIApproval, SPDXListed}
+  alias HexLicenses.Rule
 
   @impl Mix.Task
   def run(args) do
@@ -76,11 +76,11 @@ defmodule Mix.Tasks.Licenses do
   end
 
   defp summarize_all(results) do
-    if Enum.all?(results, &Check.pass?/1) do
+    if Enum.all?(results, &Rule.pass?/1) do
       IO.ANSI.format([:green, "all checks passed"])
     else
       str =
-        Enum.map(results, &Check.failure_summary/1)
+        Enum.map(results, &Rule.failure_summary/1)
         |> Enum.join(", ")
 
       IO.ANSI.format([:red, str])

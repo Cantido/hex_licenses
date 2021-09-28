@@ -1,7 +1,7 @@
-defmodule HexLicenses.Check.OSIApprovalTest do
+defmodule HexLicenses.Rule.OSIApprovalTest do
   use ExUnit.Case, async: true
-  alias HexLicenses.Check.OSIApproval
-  alias HexLicenses.Check
+  alias HexLicenses.Rule.OSIApproval
+  alias HexLicenses.Rule
   doctest OSIApproval
 
   test "does not pass if a license is not approved" do
@@ -10,9 +10,9 @@ defmodule HexLicenses.Check.OSIApprovalTest do
         "APPROVED" => %{osi_approved?: true},
         "NOT-APPROVED" => %{osi_approved?: false}
       })
-      |> Check.results(["APPROVED", "NOT-APPROVED"])
+      |> Rule.results(["APPROVED", "NOT-APPROVED"])
 
-    refute Check.pass?(results)
+    refute Rule.pass?(results)
   end
 
   test "passes if licenses are all approved" do
@@ -21,9 +21,9 @@ defmodule HexLicenses.Check.OSIApprovalTest do
         "APPROVED" => %{osi_approved?: true},
         "NOT-APPROVED" => %{osi_approved?: false}
       })
-      |> Check.results(["APPROVED"])
+      |> Rule.results(["APPROVED"])
 
-    assert Check.pass?(results)
+    assert Rule.pass?(results)
   end
 
   test "passes if no licenses are recognized" do
@@ -32,9 +32,9 @@ defmodule HexLicenses.Check.OSIApprovalTest do
         "APPROVED" => %{osi_approved?: true},
         "NOT-APPROVED" => %{osi_approved?: false}
       })
-      |> Check.results(["NOT-LISTED"])
+      |> Rule.results(["NOT-LISTED"])
 
-    assert Check.pass?(results)
+    assert Rule.pass?(results)
   end
 
   test "formats summary" do
@@ -43,9 +43,9 @@ defmodule HexLicenses.Check.OSIApprovalTest do
         "APPROVED" => %{osi_approved?: true},
         "NOT-APPROVED" => %{osi_approved?: false}
       })
-      |> Check.results(["NOT-APPROVED"])
+      |> Rule.results(["NOT-APPROVED"])
 
-    assert Check.failure_summary(results) =~ "1 not approved"
+    assert Rule.failure_summary(results) =~ "1 not approved"
   end
 
   test "formats explanation" do
@@ -54,8 +54,8 @@ defmodule HexLicenses.Check.OSIApprovalTest do
         "APPROVED" => %{osi_approved?: true},
         "NOT-APPROVED" => %{osi_approved?: false}
       })
-      |> Check.results(["NOT-APPROVED"])
+      |> Rule.results(["NOT-APPROVED"])
 
-    assert Check.list_failures(results) == ["\"NOT-APPROVED\" is not OSI-approved"]
+    assert Rule.list_failures(results) == ["\"NOT-APPROVED\" is not OSI-approved"]
   end
 end

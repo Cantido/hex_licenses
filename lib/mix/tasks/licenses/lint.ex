@@ -23,8 +23,8 @@ defmodule Mix.Tasks.Licenses.Lint do
     * `--update` - pull down a fresh copy of the SPDX license list instead of using the version checked in with this tool.
   """
   use Mix.Task
-  alias HexLicenses.Check.{Deprecation, OSIApproval, ReuseSpec, SPDXListed}
-  alias HexLicenses.Check
+  alias HexLicenses.Rule.{Deprecation, OSIApproval, ReuseSpec, SPDXListed}
+  alias HexLicenses.Rule
 
   @shortdoc "Check the current project's licenses."
 
@@ -63,12 +63,12 @@ defmodule Mix.Tasks.Licenses.Lint do
 
     shell = Mix.shell()
 
-    if Enum.all?(results, &Check.pass?/1) do
+    if Enum.all?(results, &Rule.pass?/1) do
       shell.info("All checks passed.")
     else
       Enum.each(results, fn result ->
-        unless Check.pass?(result) do
-          Check.list_failures(result)
+        unless Rule.pass?(result) do
+          Rule.list_failures(result)
           |> Enum.map(&"- #{&1}")
           |> Enum.join("\n")
           |> shell.info()

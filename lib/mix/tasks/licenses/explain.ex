@@ -17,8 +17,8 @@ defmodule Mix.Tasks.Licenses.Explain do
   """
 
   use Mix.Task
-  alias HexLicenses.Check.{Deprecation, OSIApproval, SPDXListed}
-  alias HexLicenses.Check
+  alias HexLicenses.Rule.{Deprecation, OSIApproval, SPDXListed}
+  alias HexLicenses.Rule
 
   @shortdoc "Prints all dependencies with unrecognized or non-OSI-approved licenses."
 
@@ -46,7 +46,7 @@ defmodule Mix.Tasks.Licenses.Explain do
     failures =
       HexLicenses.license_check(checks)
       |> Enum.map(fn {dep, results} ->
-        failed_results = Enum.reject(results, &Check.pass?/1)
+        failed_results = Enum.reject(results, &Rule.pass?/1)
 
         {dep, failed_results}
       end)
@@ -56,7 +56,7 @@ defmodule Mix.Tasks.Licenses.Explain do
       IO.puts("All checks passed, nothing to explain.")
     else
       Enum.each(failures, fn {dep, results} ->
-        failure_messages = Enum.flat_map(results, &Check.list_failures/1)
+        failure_messages = Enum.flat_map(results, &Rule.list_failures/1)
 
         shell = Mix.shell()
 

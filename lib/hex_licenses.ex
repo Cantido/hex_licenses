@@ -8,10 +8,10 @@ defmodule HexLicenses do
   """
 
   alias HexLicenses.Hex
-  alias HexLicenses.Check
+  alias HexLicenses.Rule
 
   def lint(package, checks_to_perform) do
-    Enum.map(checks_to_perform, &Check.results(&1, package[:licenses]))
+    Enum.map(checks_to_perform, &Rule.results(&1, package[:licenses]))
   end
 
   def license_check(checks_to_perform) do
@@ -23,7 +23,7 @@ defmodule HexLicenses do
     |> Stream.map(fn {:ok, val} -> val end)
     |> Map.new(fn
       {dep, {:ok, licenses}} ->
-        results = Enum.map(checks_to_perform, &Check.results(&1, licenses))
+        results = Enum.map(checks_to_perform, &Rule.results(&1, licenses))
         {dep, results}
 
       {dep, {:error, :enoent}} ->

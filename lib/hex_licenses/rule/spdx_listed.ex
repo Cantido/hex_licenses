@@ -1,4 +1,4 @@
-defmodule HexLicenses.Check.OSIApproval do
+defmodule HexLicenses.Rule.SPDXListed do
   @enforce_keys [:spdx_data]
   defstruct spdx_data: nil,
             failed_licenses: []
@@ -7,15 +7,9 @@ defmodule HexLicenses.Check.OSIApproval do
     %__MODULE__{spdx_data: spdx_data}
   end
 
-  defimpl HexLicenses.Check do
+  defimpl HexLicenses.Rule do
     def results(struct, licenses) do
-      failed_licenses =
-        licenses
-        # drop unrecognized licenses, let the other check validate that
-        |> Enum.filter(&Map.has_key?(struct.spdx_data, &1))
-        |> Enum.reject(fn license ->
-          struct.spdx_data[license].osi_approved?
-        end)
+      failed_licenses = Enum.reject(licenses, &Map.has_key?(struct.spdx_data, &1))
 
       %{struct | failed_licenses: failed_licenses}
     end
@@ -25,12 +19,12 @@ defmodule HexLicenses.Check.OSIApproval do
     def failure_summary(struct) do
       count = Enum.count(struct.failed_licenses)
 
-      "#{count} not approved"
+      "#{count} not recognized"
     end
 
     def list_failures(struct) do
       Enum.map(struct.failed_licenses, fn license ->
-        ~s("#{license}" is not OSI-approved)
+        ~s("#{license}" is not in the SPDX License List)
       end)
     end
   end

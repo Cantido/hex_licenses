@@ -1,38 +1,38 @@
-defmodule HexLicenses.Check.DeprecationTest do
+defmodule HexLicenses.Rule.DeprecationTest do
   use ExUnit.Case, async: true
-  alias HexLicenses.Check.Deprecation
-  alias HexLicenses.Check
+  alias HexLicenses.Rule.Deprecation
+  alias HexLicenses.Rule
   doctest Deprecation
 
   test "does not pass if a license is deprecated" do
     results =
       Deprecation.new(%{"OLD" => %{deprecated?: true}})
-      |> Check.results(["OLD", "NEW"])
+      |> Rule.results(["OLD", "NEW"])
 
-    refute Check.pass?(results)
+    refute Rule.pass?(results)
   end
 
   test "passes if licenses are not deprecated" do
     results =
       Deprecation.new(%{"NEW" => %{deprecated?: false}})
-      |> Check.results(["NEW", "WEIRD"])
+      |> Rule.results(["NEW", "WEIRD"])
 
-    assert Check.pass?(results)
+    assert Rule.pass?(results)
   end
 
   test "formats summary" do
     results =
       Deprecation.new(%{"OLD" => %{deprecated?: true}})
-      |> Check.results(["OLD"])
+      |> Rule.results(["OLD"])
 
-    assert Check.failure_summary(results) =~ "1 deprecated"
+    assert Rule.failure_summary(results) =~ "1 deprecated"
   end
 
   test "formats explanation" do
     results =
       Deprecation.new(%{"OLD" => %{deprecated?: true}})
-      |> Check.results(["OLD"])
+      |> Rule.results(["OLD"])
 
-    assert Check.list_failures(results) == ["\"OLD\" is deprecated"]
+    assert Rule.list_failures(results) == ["\"OLD\" is deprecated"]
   end
 end
