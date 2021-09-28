@@ -11,13 +11,7 @@ defmodule HexLicenses do
   alias HexLicenses.Check
 
   def lint(package, checks_to_perform) do
-    if is_nil(package) do
-      {:error, :package_not_defined}
-    else
-      results = Enum.map(checks_to_perform, &Check.results(&1, package[:licenses]))
-
-      {:ok, results}
-    end
+    Enum.map(checks_to_perform, &Check.results(&1, package[:licenses]))
   end
 
   def license_check(checks_to_perform) do

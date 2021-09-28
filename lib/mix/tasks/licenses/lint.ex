@@ -56,7 +56,7 @@ defmodule Mix.Tasks.Licenses.Lint do
         checks
       end
 
-    {:ok, results} =
+    results =
       Mix.Project.get!().project()[:package]
       |> validate_package!()
       |> HexLicenses.lint(checks)
