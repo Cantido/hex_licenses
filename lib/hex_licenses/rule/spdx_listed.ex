@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: MIT
 
 defmodule HexLicenses.Rule.SPDXListed do
+  @moduledoc """
+  A `HexLicenses.Rule` that makes sure licenses are listed in the SPDX License List.
+  """
   @enforce_keys [:spdx_data]
   defstruct spdx_data: nil,
             failed_licenses: []

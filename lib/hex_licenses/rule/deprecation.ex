@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: MIT
 
 defmodule HexLicenses.Rule.Deprecation do
+  @moduledoc """
+  A `HexLicenses.Rule` that checks for deprecated licenses.
+  """
   @enforce_keys [:spdx_data]
   defstruct spdx_data: nil,
             failed_licenses: []

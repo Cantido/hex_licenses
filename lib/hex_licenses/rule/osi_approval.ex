@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: MIT
 
 defmodule HexLicenses.Rule.OSIApproval do
+  @moduledoc """
+  A `HexLicenses.Rule` that checks licenses for OSI approval.
+  """
   @enforce_keys [:spdx_data]
   defstruct spdx_data: nil,
             failed_licenses: []

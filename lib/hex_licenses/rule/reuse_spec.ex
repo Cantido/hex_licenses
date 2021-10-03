@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: MIT
 
 defmodule HexLicenses.Rule.ReuseSpec do
+  @moduledoc """
+  A `HexLicenses.Rule` that checks a project's Mixfile licenses against the licenses in a `LICENSES/` directory.
+  """
   @enforce_keys [:licenses_in_directory]
   defstruct licenses_in_directory: nil,
             licenses_in_hex: []
