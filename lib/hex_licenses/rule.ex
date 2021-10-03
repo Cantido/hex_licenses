@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defprotocol HexLicenses.Rule do
   @moduledoc """
   A protocol for objects that check dependency licenses.

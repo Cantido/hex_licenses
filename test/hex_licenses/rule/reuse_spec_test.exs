@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule HexLicenses.Rule.ReuseSpecTest do
   use ExUnit.Case, async: true
   alias HexLicenses.Rule.ReuseSpec

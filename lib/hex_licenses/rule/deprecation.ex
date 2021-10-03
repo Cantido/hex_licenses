@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule HexLicenses.Rule.Deprecation do
   @enforce_keys [:spdx_data]
   defstruct spdx_data: nil,

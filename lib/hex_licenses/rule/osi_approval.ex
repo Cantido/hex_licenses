@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Rosa Richter
+#
+# SPDX-License-Identifier: MIT
+
 defmodule HexLicenses.Rule.OSIApproval do
   @enforce_keys [:spdx_data]
   defstruct spdx_data: nil,
