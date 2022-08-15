@@ -2,15 +2,23 @@
 #
 # SPDX-License-Identifier: MIT
 
+
+VERSION 0.6
+
 ARG MIX_ENV=dev
+ARG ELIXIR_VERSION=1.13
 
 all:
   BUILD +lint
   BUILD +lint-copyright
-  BUILD +test
+  BUILD +test \
+    --ELIXIR_VERSION=1.14 \
+    --ELIXIR_VERSION=1.13 \
+    --ELIXIR_VERSION=1.12 \
+    --ELIXIR_VERSION=1.11
 
 get-deps:
-  FROM elixir:1.12-alpine
+  FROM elixir:${ELIXIR_VERSION}-alpine
   RUN mix do local.rebar --force, local.hex --force
   COPY mix.exs .
   COPY mix.lock .
