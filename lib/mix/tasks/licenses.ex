@@ -80,8 +80,7 @@ defmodule Mix.Tasks.Licenses do
       IO.ANSI.format([:green, "all checks passed"])
     else
       str =
-        Enum.map(results, &Rule.failure_summary/1)
-        |> Enum.join(", ")
+        Enum.map_join(results, ", ", &Rule.failure_summary/1)
 
       IO.ANSI.format([:red, str])
     end

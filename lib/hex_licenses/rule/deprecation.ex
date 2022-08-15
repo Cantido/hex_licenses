@@ -19,9 +19,8 @@ defmodule HexLicenses.Rule.Deprecation do
       failed_licenses =
         licenses
         # drop unrecognized licenses, let the other check validate that
-        |> Enum.filter(&Map.has_key?(struct.spdx_data, &1))
         |> Enum.filter(fn license ->
-          struct.spdx_data[license].deprecated?
+          Map.has_key?(struct.spdx_data, license) and struct.spdx_data[license].deprecated?
         end)
 
       %{struct | failed_licenses: failed_licenses}

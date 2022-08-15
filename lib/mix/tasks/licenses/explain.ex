@@ -63,8 +63,7 @@ defmodule Mix.Tasks.Licenses.Explain do
         shell.info("#{dep}'s licenses have #{Enum.count(failure_messages)} problem(s):")
 
         failure_messages
-        |> Enum.map(&"- #{&1}")
-        |> Enum.join("\n")
+        |> Enum.map_join("\n", &"- #{&1}")
         |> shell.info()
       end)
     end

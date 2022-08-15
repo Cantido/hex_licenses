@@ -69,8 +69,7 @@ defmodule Mix.Tasks.Licenses.Lint do
       Enum.each(results, fn result ->
         unless Rule.pass?(result) do
           Rule.list_failures(result)
-          |> Enum.map(&"- #{&1}")
-          |> Enum.join("\n")
+          |> Enum.map_join("\n", &"- #{&1}")
           |> shell.info()
         end
       end)
