@@ -40,7 +40,7 @@ The docs can be found at [https://hexdocs.pm/hex_licenses](https://hexdocs.pm/he
 There are a few mix tasks in this project.
 
 `mix licenses` will print a summary of your dependencies and the status of their licenses.
-License IDs defined by the package should be an identifier on the [SPDX License List](https://spdx.org/licences).
+License IDs defined by the package should be an identifier on the [SPDX License List](https://spdx.org/licenses/).
 
 ```
 $ mix licenses
